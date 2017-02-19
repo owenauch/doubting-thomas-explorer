@@ -15,8 +15,53 @@ base = "https://www.biblegateway.com/passage/"
 #verse to start our journey with
 start_verse = "John 10:10"
 
-#bible version
-version = "NIV"
+# list of all verse found so far
+verse_list = []
+
+# A verse object, with info on the verse, as well as what it's linked to
+class Verse:
+	#constructor:
+	# each verse has a book, chapter, verse, as well as an array of reference pointing in and out
+	def __init__(self, url):
+		self.book = self.get_book()
+		self.chapter = self.get_chapter()
+		self.verse = self.get_verse()
+		self.refsIn = []
+		self.refsOut = []
+		self.url = url
+		self.baseurl = "https://www.biblegateway.com/passage/?search="
+
+	# get book name from url query string
+	def get_book(self):
+		book = self.url.split("+", 1)[0]
+		return book
+
+	# get chapter name from url query string
+	def get_chapter(self):
+		chapter = self.url.split("+", 1)[1].split("%", 1)[0]
+		return chapter
+
+	# gets verse from the url query string
+	def get_verse(self):
+		verse = self.url.split("%3A", 1)[1]
+		return verse
+
+	# adds a reference in to refsIn array
+	# need to pass in a Verse object
+	def add_ref_in(self, refIn):
+		self.refsIn.append(refIn)
+
+	# adds several references out to refsOut array
+	# need to pass in an array of Verse objects
+	def add_ref_out(self, refsOut):
+		for verse in refsOut:
+			self.refsOut.append(verse)
+
+	#get full url for searching
+	def get_full_url(self):
+		return self.baseurl + self.url
+
+
 
 #verify set to false for scrape
 def verify_false():
@@ -25,22 +70,13 @@ def verify_false():
 	ctx.verify_mode = ssl.CERT_NONE
 	return ctx
 
-#make verse string usable as a url query parameter
-def urlify_verse(verse):
-    verse = verse.replace(" ", "+")
-    verse = verse.replace(":", "%3A")
-    return verse
-
-#for putting it back at the end
-def versify_url(url):
-    verse = url.replace(" ")
-
-#get verse query string
-def get_start_url(verse):
-    url_verse = urlify_verse(verse)
-    verse_query = "?search=" + url_verse + "&version=" + version
-    start_url = base + verse_query
-    return start_url
+# create url query string parameter for verse
+def make_first_verse(verse):
+    url = verse.replace(" ", "+")
+    url = verse.replace(":", "%3A")
+	start_verse = Verse(url)
+	verse_list.append(start_verse)
+	return start_verse
 
 #open and soupify
 def soupify(url):
@@ -53,8 +89,3 @@ def soupify(url):
 def get_next_url(soup):
     crossref_div = soup.find('div', class_='crossrefs')
     return crossref_div
-
-#test as we go
-url = get_start_url(start_verse)
-soup = soupify(url)
-print(get_next_url(soup))
