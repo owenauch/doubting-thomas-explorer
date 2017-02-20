@@ -23,22 +23,24 @@ class Verse:
 	#constructor:
 	# each verse has a book, chapter, verse, as well as an array of reference pointing in and out
 	def __init__(self, url):
+		self.url = url
+		self.baseurl = "https://www.biblegateway.com/passage/?search="
 		self.book = self.get_book()
 		self.chapter = self.get_chapter()
 		self.verse = self.get_verse()
 		self.refsIn = []
 		self.refsOut = []
-		self.url = url
-		self.baseurl = "https://www.biblegateway.com/passage/?search="
 
 	# get book name from url query string
 	def get_book(self):
 		book = self.url.split("+", 1)[0]
+		print book
 		return book
 
 	# get chapter name from url query string
 	def get_chapter(self):
 		chapter = self.url.split("+", 1)[1].split("%", 1)[0]
+		print chapter
 		return chapter
 
 	# gets verse from the url query string
@@ -72,16 +74,16 @@ def verify_false():
 
 # create verse object for first verse and place in verse_list
 def make_first_verse(verse):
-    url = verse.replace(" ", "+")
-    url = verse.replace(":", "%3A")
+	url = verse.replace(" ", "+")
+	url = verse.replace(":", "%3A")
 	start_verse = Verse(url)
 	verse_list.append(start_verse)
 	return start_verse
 
-#open and soupify
-def soupify(url):
+#open and soupify verse
+def soupify(verse):
     ctx = verify_false()
-    html = urlopen(url, context=ctx).read()
+    html = urlopen(verse.url, context=ctx).read()
     soup = BeautifulSoup(html, "lxml")
     return soup
 
@@ -89,3 +91,9 @@ def soupify(url):
 def get_next_url(soup):
     crossref_div = soup.find('div', class_='crossrefs')
     return crossref_div
+
+#first step
+start = make_first_verse(start_verse)
+print start.url
+soup = soupify(start)
+print (soup)
