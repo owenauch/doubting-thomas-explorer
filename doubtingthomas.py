@@ -70,7 +70,7 @@ def verify_false():
 	ctx.verify_mode = ssl.CERT_NONE
 	return ctx
 
-# create url query string parameter for verse
+# create verse object for first verse and place in verse_list
 def make_first_verse(verse):
     url = verse.replace(" ", "+")
     url = verse.replace(":", "%3A")
