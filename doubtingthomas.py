@@ -21,61 +21,79 @@ verse_list = []
 
 # A verse object, with info on the verse, as well as what it's linked to
 class Verse:
-	#constructor:
-	# each verse has a book, chapter, verse, as well as an array of reference pointing in and out
-	def __init__(self, url):
-		self.url = url
-		self.baseurl = "https://www.biblegateway.com/passage/?search="
-		self.book = self.get_book()
-		self.chapter = self.get_chapter()
-		self.verse = self.get_verse()
-		self.refsIn = []
-		self.refsOut = []
+    #constructor:
+    # each verse has a book, chapter, verse, as well as an array of reference pointing in and out
+    def __init__(self, url):
+        self.url = url
+        self.baseurl = "https://www.biblegateway.com/passage/?search="
+        self.book = self.get_book()
+        self.chapter = self.get_chapter()
+        self.verse = self.get_verse()
+        self.refsIn = []
+        self.refsOut = []
 
-	# get book name from url query string
-	def get_book(self):
-		book = self.url.split("+", 1)[0]
-		return book
+    # get book name from url query string
+    def get_book(self):
+        book = self.url.split("+", 1)[0]
+        return book
 
-	# get chapter name from url query string
-	def get_chapter(self):
-		chapter = self.url.split("+", 1)[1].split("%", 1)[0]
-		return chapter
+    # get chapter name from url query string
+    def get_chapter(self):
+        chapter = self.url.split("+", 1)[1].split("%", 1)[0]
+        return chapter
 
-	# gets verse from the url query string
-	def get_verse(self):
-		verse = self.url.split("%3A", 1)[1]
-		return verse
+    # gets verse from the url query string
+    def get_verse(self):
+        verse = self.url.split("%3A", 1)[1]
+        return verse
 
-	# adds a reference in to refsIn array
-	# need to pass in a Verse object
-	def add_ref_in(self, refIn):
-		self.refsIn.append(refIn)
+    # adds a reference in to refsIn array
+    # need to pass in a Verse object
+    def add_ref_in(self, refIn):
+        self.refsIn.append(refIn)
 
-	# adds several references out to refsOut array
-	# need to pass in an array of Verse objects
-	def add_ref_out(self, refOut):
-		self.refsOut.append(refOut)
+    # adds several references out to refsOut array
+    # need to pass in an array of Verse objects
+    def add_ref_out(self, refOut):
+        self.refsOut.append(refOut)
 
-	#get full url for searching
-	def get_full_url(self):
-		return self.baseurl + self.url
+    #get full url for searching
+    def get_full_url(self):
+        return self.baseurl + self.url
+
+    #gets refsOut and returns them
+    def get_refs_out(self):
+        return self.refsOut
+
+    def get_refs_in(self):
+        return self.refsIn
+
+    #allows == to work
+    def __eq__(self, other):
+        if (self.get_book() != other.get_book()):
+            return False
+        if (self.get_chapter() != other.get_chapter()):
+            return False
+        if (self.get_verse() != other.get_verse()):
+            return False
+        return True
+
 
 
 #verify set to false for scrape
 def verify_false():
-	ctx = ssl.create_default_context()
-	ctx.check_hostname = False
-	ctx.verify_mode = ssl.CERT_NONE
-	return ctx
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    return ctx
 
 # create verse object for first verse and place in verse_list
 def make_first_verse(verse):
-	url = verse.replace(" ", "+")
-	url = url.replace(":", "%3A")
-	start_verse = Verse(url)
-	verse_list.append(start_verse)
-	return start_verse
+    url = verse.replace(" ", "+")
+    url = url.replace(":", "%3A")
+    start_verse = Verse(url)
+    verse_list.append(start_verse)
+    return start_verse
 
 #open and soupify verse
 def soupify(verse):
@@ -117,7 +135,23 @@ def get_next_verses(verse):
             new_verse = Verse(ref)
             new_verse.add_ref_in(verse)
             verse.add_ref_out(new_verse)
-            print new_verse.get_book() + new_verse.get_chapter() + new_verse.get_verse()
+            print "verse"
+            print verse.get_book() + " " + verse.get_chapter() + ":" + verse.get_verse()
+            print "new verse"
+            print new_verse.get_book() + " " + new_verse.get_chapter() + ":" + new_verse.get_verse()
+            if (new_verse in verse_list):
+                print "a"
+                index = verse_list.index(new_verse)
+                if (verse not in verse_list[index].get_refs_in()):
+                    print "b"
+                    updated_verse = verse_list[index].add_ref_in(verse)
+                    print updated_verse
+                    verse_list[index] = updated_verse
+            else:
+                print "c"
+                verse_list.append(new_verse)
+            if (new_verse in verse.get_refs_in()):
+                return
             get_next_verses(new_verse)
 
 
