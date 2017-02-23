@@ -51,11 +51,13 @@ class Verse:
     # need to pass in a Verse object
     def add_ref_in(self, refIn):
         self.refsIn.append(refIn)
+        return self
 
     # adds several references out to refsOut array
     # need to pass in an array of Verse objects
     def add_ref_out(self, refOut):
         self.refsOut.append(refOut)
+        return self
 
     #get full url for searching
     def get_full_url(self):
@@ -135,20 +137,14 @@ def get_next_verses(verse):
             new_verse = Verse(ref)
             new_verse.add_ref_in(verse)
             verse.add_ref_out(new_verse)
-            print "verse"
             print verse.get_book() + " " + verse.get_chapter() + ":" + verse.get_verse()
-            print "new verse"
             print new_verse.get_book() + " " + new_verse.get_chapter() + ":" + new_verse.get_verse()
             if (new_verse in verse_list):
-                print "a"
                 index = verse_list.index(new_verse)
                 if (verse not in verse_list[index].get_refs_in()):
-                    print "b"
-                    updated_verse = verse_list[index].add_ref_in(verse)
-                    print updated_verse
-                    verse_list[index] = updated_verse
+                    new_verse = verse_list[index].add_ref_in(verse)
+                    verse_list[index] = new_verse
             else:
-                print "c"
                 verse_list.append(new_verse)
             if (new_verse in verse.get_refs_in()):
                 return
