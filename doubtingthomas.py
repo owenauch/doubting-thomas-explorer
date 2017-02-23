@@ -117,6 +117,7 @@ def get_next_verses(verse):
             new_verse = Verse(ref)
             new_verse.add_ref_in(verse)
             verse.add_ref_out(new_verse)
+            print new_verse.get_book() + new_verse.get_chapter() + new_verse.get_verse()
             get_next_verses(new_verse)
 
 
