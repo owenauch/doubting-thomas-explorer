@@ -14,7 +14,7 @@ import re
 base = "https://www.biblegateway.com/passage/"
 
 #verse to start our journey with
-start_verse_name = "John 10:10"
+start_verse_name = "1 John 3:16"
 
 # list of all verse found so far
 verse_list = []
@@ -34,12 +34,13 @@ class Verse:
 
     # get book name from url query string
     def get_book(self):
-        book = self.url.split("+", 1)[0]
+        book = self.url.rpartition("+")[0]
+        book = book.replace("+", " ")
         return book
 
     # get chapter name from url query string
     def get_chapter(self):
-        chapter = self.url.split("+", 1)[1].split("%", 1)[0]
+        chapter = self.url.split("+")[-1].split("%", 1)[0]
         return chapter
 
     # gets verse from the url query string
@@ -63,13 +64,6 @@ class Verse:
     def get_full_url(self):
         return self.baseurl + self.url
 
-    #gets refsOut and returns them
-    def get_refs_out(self):
-        return self.refsOut
-
-    def get_refs_in(self):
-        return self.refsIn
-
     #allows == to work
     def __eq__(self, other):
         if (self.get_book() != other.get_book()):
@@ -79,6 +73,10 @@ class Verse:
         if (self.get_verse() != other.get_verse()):
             return False
         return True
+
+    #__str__ isn't feeling it so I'm doing this I guess
+    def get_name(self):
+        return (self.book + " " + self.chapter + ":" + self.verse)
 
 
 
@@ -91,6 +89,7 @@ def verify_false():
 
 # create verse object for first verse and place in verse_list
 def make_first_verse(verse):
+    #books with space make this harder -- ex. 1 John
     url = verse.replace(" ", "+")
     url = url.replace(":", "%3A")
     start_verse = Verse(url)
@@ -114,43 +113,56 @@ def parse_crossref_url(href):
 #the biggie
 #gets all the verses crossreferenced by the input verse,
 #saves then to verse_list, then calls get_next_verses on all of them
-def get_next_verses(verse):
+def get_next_verses(verse, num):
     soup = soupify(verse)
     crossref_div = soup.find("div", class_="crossrefs")
 
     #gets all list elements in crossref_div
-    crossref_li = crossref_div.find_all("li")
+    #make sure it has cross-references
+    if (crossref_div):
+        crossref_li = crossref_div.find_all("li")
 
-    #gets href for each a element to a cross-referenced verse
-    #puts in list hrefs_list
-    #each href is in the form /passage/?search=<verse1url>%2C<verse2url>&version=NIV
-    hrefs_list = []
-    for li in crossref_li:
-        full_link = li.find("a", class_="crossref-link")['href']
-        hrefs_list.append(full_link)
+        #gets href for each a element to a cross-referenced verse
+        #puts in list hrefs_list
+        #each href is in the form /passage/?search=<verse1url>%2C<verse2url>&version=NIV
+        hrefs_list = []
+        for li in crossref_li:
+            full_link = li.find("a", class_="crossref-link")['href']
+            hrefs_list.append(full_link)
 
-    #get all the reference urls, make them into verses
-    #save properties of them, save them to verse list, and call on them
-    for ref in hrefs_list:
-        refs_list = parse_crossref_url(ref)
-        for ref in refs_list:
-            new_verse = Verse(ref)
-            new_verse.add_ref_in(verse)
-            verse.add_ref_out(new_verse)
-            print verse.get_book() + " " + verse.get_chapter() + ":" + verse.get_verse()
-            print new_verse.get_book() + " " + new_verse.get_chapter() + ":" + new_verse.get_verse()
-            if (new_verse in verse_list):
-                index = verse_list.index(new_verse)
-                if (verse not in verse_list[index].get_refs_in()):
-                    new_verse = verse_list[index].add_ref_in(verse)
-                    verse_list[index] = new_verse
-            else:
-                verse_list.append(new_verse)
-            if (new_verse in verse.get_refs_in()):
-                return
-            get_next_verses(new_verse)
+        #get all the reference urls, make them into verses
+        #save properties of them, save them to verse list, and call on them
+        for ref in hrefs_list:
+            refs_list = parse_crossref_url(ref)
+            for ref in refs_list:
+                new_verse = Verse(ref)
+                new_verse.add_ref_in(verse)
+                verse.add_ref_out(new_verse)
+
+                #checks if verse already exists in verse_list
+                #if it is, adds the new in reference as long as it won't be duplicating a refIn
+                if (new_verse in verse_list):
+                    index = verse_list.index(new_verse)
+                    if (verse not in verse_list[index].refsIn):
+                        new_verse = verse_list[index].add_ref_in(verse)
+                        verse_list[index] = new_verse
+                #otherwise, adds it to the list
+                else:
+                    verse_list.append(new_verse)
+                if (new_verse in verse.refsIn):
+                    return
+                if (num < 10):
+                    print (new_verse.get_name())
+                    num = num + 1
+                    get_next_verses(new_verse, num)
 
 
 #first step
 start_verse = make_first_verse(start_verse_name)
-get_next_verses(start_verse)
+get_next_verses(start_verse, 1)
+print "+++++++++++++++++++++++++"
+for v in verse_list:
+    print "Verse: " + v.get_name()
+    print "Crossrefs:"
+    for ref in v.refsOut:
+        print "    " + ref.get_name()
