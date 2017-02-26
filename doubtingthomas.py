@@ -137,21 +137,26 @@ def get_next_verses(verse, num):
             for ref in refs_list:
                 new_verse = Verse(ref)
                 new_verse.add_ref_in(verse)
-                verse.add_ref_out(new_verse)
+
+                # filter refsOut for duplicates
+                if (new_verse not in verse.refsOut):
+                    verse.refsOut.append(new_verse)
 
                 #checks if verse already exists in verse_list
                 #if it is, adds the new in reference as long as it won't be duplicating a refIn
+                # if it's already in the list, return
                 if (new_verse in verse_list):
                     index = verse_list.index(new_verse)
                     if (verse not in verse_list[index].refsIn):
                         new_verse = verse_list[index].add_ref_in(verse)
                         verse_list[index] = new_verse
+                    return;
                 #otherwise, adds it to the list
                 else:
                     verse_list.append(new_verse)
                 if (new_verse in verse.refsIn):
                     return
-                if (num < 10):
+                if (num < 25):
                     print ("Verse: " + new_verse.get_name())
                     print "Crossrefs:"
                     for r in new_verse.refsOut:
