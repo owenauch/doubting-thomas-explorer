@@ -151,7 +151,7 @@ def get_next_verses(verse, num):
                     verse_list.append(new_verse)
                 if (new_verse in verse.refsIn):
                     return
-                if (num < 5):
+                if (num < 10):
                     print ("Verse: " + new_verse.get_name())
                     print "Crossrefs:"
                     for r in new_verse.refsOut:
