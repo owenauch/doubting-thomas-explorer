@@ -138,10 +138,6 @@ def get_next_verses(verse, num):
                 new_verse = Verse(ref)
                 new_verse.add_ref_in(verse)
 
-                # check if it's a multi-verse passage -- if so, then don't save it
-                if ("+" in new_verse.get_name() or "%3A" in new_verse.get_name()):
-                    return
-
                 # filter refsOut for duplicates
                 if (new_verse not in verse.refsOut):
                     verse.refsOut.append(new_verse)
@@ -160,7 +156,7 @@ def get_next_verses(verse, num):
                     verse_list.append(new_verse)
                 if (new_verse in verse.refsIn):
                     return
-                if (num < 20):
+                if (num < 5):
                     print ("Verse: " + new_verse.get_name())
                     print "Crossrefs:"
                     for r in new_verse.refsOut:
@@ -169,7 +165,7 @@ def get_next_verses(verse, num):
                     get_next_verses(new_verse, num)
 
 
-#tester
+#first step
 start_verse = make_first_verse(start_verse_name)
 get_next_verses(start_verse, 1)
 print "+++++++++++++++++++++++++"
