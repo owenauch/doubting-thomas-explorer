@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 #where we attach verse url to get the verse text
 verse_text_url = "https://www.openbible.info/labs/cross-references/search?q="
 
+#variable for text input
 py3 = False
 
 #gets first verse from user
@@ -17,6 +18,7 @@ def get_start_verse():
     else:
         verse = raw_input('Enter verse to start (example: "John 10:10"):\n')
     print ""
+    #makes it into a verse object and returns it
     return doubtingthomas.make_first_verse(verse)
 
 #gets soup of verse text site
@@ -29,6 +31,7 @@ def soup_verse_text(verse):
 
 #get next reference index from user
 def next_ref_index(list_len):
+    #get which reference they'd like to see next
     if py3:
         verse_num = input("Type the number of the verse in the list whose cross references you'd like to see, or type 'n' to quit:\n")
     else:
@@ -36,17 +39,24 @@ def next_ref_index(list_len):
 
     verse_index = 0
 
+    #check if they tried to quit
     if (verse_num == "n"):
+        print "Thanks!"
         return
 
+    #make sure it is a legitimate input
     try:
         verse_index = int(verse_num)
     except ValueError:
         print "Please enter a number in the list\n"
         next_ref_index()
+
     if (verse_index < 0 or verse_index > list_len):
         print "Please enter a number in the list\n"
         next_ref_index(list_len)
+        return
+
+    #if so return it
     return (verse_index - 1)
 
 
@@ -73,8 +83,7 @@ def crossref_stepper(verse):
             full_link = li.find("a", class_="crossref-link")['href']
             hrefs_list.append(full_link)
 
-        #get all the reference urls, make them into verses
-        #save properties of them, save them to verse list, and call on them
+        #gets all cross references, gets their text from another site, saves them into the crossrefs_list
         for ref in hrefs_list:
             refs_list = doubtingthomas.parse_crossref_url(ref)
             for ref in refs_list:
@@ -91,7 +100,7 @@ def crossref_stepper(verse):
         print ref.verseText
         print ""
     verse_index = next_ref_index(len(crossrefs_list))
-    
+
     if (verse_index is None):
         return
 
@@ -99,10 +108,3 @@ def crossref_stepper(verse):
     print ""
     crossrefs_list = []
     crossref_stepper(next_ref)
-
-
-
-
-#executed code
-start_verse = get_start_verse()
-crossref_stepper(start_verse)

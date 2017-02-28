@@ -118,7 +118,7 @@ def parse_crossref_url(href):
 #the biggie
 #gets all the verses crossreferenced by the input verse,
 #saves then to verse_list, then calls get_next_verses on all of them
-def get_next_verses(verse, num):
+def get_next_verses(verse, num, max_num):
     soup = soupify(verse)
     crossref_div = soup.find("div", class_="crossrefs")
 
@@ -161,13 +161,10 @@ def get_next_verses(verse, num):
                     verse_list.append(new_verse)
                 if (new_verse in verse.refsIn):
                     return
-                if (num < 5):
+                if (num < max_num):
                     print ("Verse: " + new_verse.get_name())
-                    print "Crossrefs:"
-                    for r in new_verse.refsOut:
-                        print "    " + r.get_name()
                     num = num + 1
-                    get_next_verses(new_verse, num)
+                    get_next_verses(new_verse, num, max_num)
 
 
 # #first step

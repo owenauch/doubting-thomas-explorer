@@ -1,11 +1,31 @@
 from doubtingthomas import *
 import csv
+import thomasstepper
+from sys import version_info
 
 # creates a csv file with name of your choice and a csv writer
 def create_csv(filename):
     myfile = open(filename, 'wb')
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     return wr
+
+# get max depth from user
+def get_max_depth():
+    py3 = version_info[0] > 2 #creates boolean value for test that Python major version > 2
+    if py3:
+        depth = input("What is the max depth you'd like to go in searching for references?\nLarger numbers take longer -- 10 is usually a good start\n")
+    else:
+        depth = raw_input("What is the max depth you'd like to go in searching for references?\nLarger numbers take longer -- 10 is usually a good start\n")
+    print ""
+
+    try:
+        checked_depth = int(depth)
+    except ValueError:
+        print "Please enter a positive number\n"
+        get_max_depth()
+        return
+
+    return checked_depth
 
 # writes the verses with references in or out underneath
 # takes in a csv_writer (wr), verse_list, and a boolean variable
@@ -46,6 +66,11 @@ def writeRefs(wr, verse_list, if_out):
 
     wr.writerow([""])
 
+# get verse to start and explore through
+start_verse = thomasstepper.get_start_verse()
+get_next_verses(start_verse, 1, get_max_depth())
+
+#write to csv
 wr = create_csv("test.csv")
 writeRefs(wr, verse_list, False)
 writeRefs(wr, verse_list, True)
