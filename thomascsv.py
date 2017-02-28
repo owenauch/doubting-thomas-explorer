@@ -70,7 +70,7 @@ def writeRefs(wr, verse_list, if_out):
 start_verse = thomasstepper.get_start_verse()
 get_next_verses(start_verse, 1, get_max_depth())
 
-#write to csv
-wr = create_csv("test.csv")
+#write to csv file "verses.csv"
+wr = create_csv("verses.csv")
 writeRefs(wr, verse_list, False)
 writeRefs(wr, verse_list, True)
