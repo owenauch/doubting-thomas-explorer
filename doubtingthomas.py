@@ -93,7 +93,8 @@ def make_first_verse(verse):
     url = verse.replace(" ", "+")
     url = url.replace(":", "%3A")
     start_verse = Verse(url)
-    verse_list.append(start_verse)
+    if (verse_list):
+        verse_list.append(start_verse)
     return start_verse
 
 #open and soupify verse
@@ -165,15 +166,15 @@ def get_next_verses(verse, num):
                     get_next_verses(new_verse, num)
 
 
-#first step
-start_verse = make_first_verse(start_verse_name)
-get_next_verses(start_verse, 1)
-print "+++++++++++++++++++++++++"
-for v in verse_list:
-    print "Verse: " + v.get_name()
-    print "Refs In:"
-    for refIn in v.refsIn:
-        print "    " + refIn.get_name()
-    print "Refs Out:"
-    for refOut in v.refsOut:
-        print "    " + refOut.get_name()
+# #first step
+# start_verse = make_first_verse(start_verse_name)
+# get_next_verses(start_verse, 1)
+# print "+++++++++++++++++++++++++"
+# for v in verse_list:
+#     print "Verse: " + v.get_name()
+#     print "Refs In:"
+#     for refIn in v.refsIn:
+#         print "    " + refIn.get_name()
+#     print "Refs Out:"
+#     for refOut in v.refsOut:
+#         print "    " + refOut.get_name()
