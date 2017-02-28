@@ -31,6 +31,7 @@ class Verse:
         self.verse = self.get_verse()
         self.refsIn = []
         self.refsOut = []
+        self.verseText = ""
 
     # get book name from url query string
     def get_book(self):
@@ -41,12 +42,15 @@ class Verse:
     # get chapter name from url query string
     def get_chapter(self):
         chapter = self.url.split("+")[-1].split("%", 1)[0]
+        if (chapter is None):
+            return ""
         return chapter
 
     # gets verse from the url query string
     def get_verse(self):
-        verse = self.url.split("%3A", 1)[1]
-        return verse
+        if ("%3A" in self.url):
+            verse = self.url.split("%3A", 1)[1]
+            return verse
 
     # adds a reference in to refsIn array
     # need to pass in a Verse object
