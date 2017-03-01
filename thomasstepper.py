@@ -1,3 +1,10 @@
+# Doubting Thomas Explorer:
+# A set of scripts to explore the bible through cross references
+# thomasstepper.py -- takes in a user verse and displays cross references 
+#
+# Author: Owen Auch
+# Matthew 28:17 -- "When they saw him, they worshiped him; but some doubted."
+
 import doubtingthomas
 from sys import version_info
 from urllib2 import urlopen

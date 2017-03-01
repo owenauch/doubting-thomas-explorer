@@ -1,3 +1,10 @@
+# Doubting Thomas Explorer:
+# A set of scripts to explore the bible through cross references
+# thomascsv.py -- uses doubtingthomas.py gathering of verses and formats to csv
+#
+# Author: Owen Auch
+# Matthew 28:17 -- "When they saw him, they worshiped him; but some doubted."
+
 from doubtingthomas import *
 import csv
 import thomasstepper

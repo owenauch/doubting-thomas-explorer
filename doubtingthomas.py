@@ -1,6 +1,8 @@
 # Doubting Thomas Explorer:
-# A python script to explore the bible by scraping cross references
+# A set of scripts to explore the bible through cross references
+# doubtingthomas.py -- contains Verse object, exploration algorithm and helper functions
 #
+# Author: Owen Auch
 # Matthew 28:17 -- "When they saw him, they worshiped him; but some doubted."
 
 from bs4 import BeautifulSoup
