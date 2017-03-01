@@ -36,7 +36,7 @@ Contributions are welcome and encouraged! Here's how to contribute:
 
 Furthermore, if you spot a bug or have an idea, please submit it to [issue tracking](https://github.com/owenauch/doubting-thomas-explorer/issues).
 
-List of improvements to make and features to add;
+**List of improvements to make and features to add:**
 * Improvements to cross reference exploration algorithm (efficiency, ensuring no infinite loops, etc)
 * Dealing with references to multiple verse passages (ex. Matthew 10:1-5)
 * Front-end to display Verse objects as a connected graph
