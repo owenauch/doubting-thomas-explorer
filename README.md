@@ -32,7 +32,7 @@ Contributions are welcome and encouraged! Here's how to contribute:
  2. **Clone** the project to your own machine
  3. **Commit** changes to your own branch
  4. **Push** your work back up to your fork
- 5. Submit a **Pull request** so that we can review your changes
+ 5. Submit a **Pull request** 
 
 Furthermore, if you spot a bug or have an idea, please submit it to [issue tracking](https://github.com/owenauch/doubting-thomas-explorer/issues).
 
