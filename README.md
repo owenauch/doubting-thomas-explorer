@@ -3,11 +3,9 @@ A set of scripts to explore the bible through cross references
 <p align="center">
   <img src='images/runstepper_gif.gif' width="500px" />
 </p>
+
 ## How to Use
-First, download or clone the repo
-```
-git clone https://github.com/owenauch/doubting-thomas-explorer.git
-```
+First, download or clone the repo: `git clone https://github.com/owenauch/doubting-thomas-explorer.git`
 
 ### Cross Reference Stepper:
 View cross references of specified start verse with ability to branch recursively (shown above)
