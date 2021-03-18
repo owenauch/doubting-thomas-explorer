@@ -83,3 +83,4 @@ wr = create_csv("verses.csv")
 writeRefs(wr, verse_list, False)
 writeRefs(wr, verse_list, True)
 
+import main

@@ -50,6 +50,7 @@ def next_ref_index(list_len):
     #check if they tried to quit
     if (verse_num == "n"):
         print ("Thanks!")
+        import main
         return
 
     #make sure it is a legitimate input
