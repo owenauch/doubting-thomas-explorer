@@ -7,7 +7,7 @@
 
 import doubtingthomas
 from sys import version_info
-from urllib2 import urlopen
+from urllib.request import urlopen
 import ssl
 from bs4 import BeautifulSoup
 
@@ -24,7 +24,7 @@ def get_start_verse():
         verse = input('Enter verse to start (example: "John 10:10"):\n')
     else:
         verse = raw_input('Enter verse to start (example: "John 10:10"):\n')
-    print ""
+    print ("")
     #makes it into a verse object and returns it
     return doubtingthomas.make_first_verse(verse)
 
@@ -38,6 +38,7 @@ def soup_verse_text(verse):
 
 #get next reference index from user
 def next_ref_index(list_len):
+    py3 = version_info[0] > 2 #creates boolean value for test that Python major version > 2
     #get which reference they'd like to see next
     if py3:
         verse_num = input("Type the number of the verse in the list whose cross references you'd like to see, or type 'n' to quit:\n")
@@ -48,18 +49,19 @@ def next_ref_index(list_len):
 
     #check if they tried to quit
     if (verse_num == "n"):
-        print "Thanks!"
+        print ("Thanks!")
+        import main
         return
 
     #make sure it is a legitimate input
     try:
         verse_index = int(verse_num)
     except ValueError:
-        print "Please enter a number in the list\n"
+        print ("Please enter a number in the list\n")
         next_ref_index()
 
     if (verse_index < 0 or verse_index > list_len):
-        print "Please enter a number in the list\n"
+        print ("Please enter a number in the list\n")
         next_ref_index(list_len)
         return
 
@@ -74,7 +76,7 @@ def crossref_stepper(verse):
     crossref_div = soup.find("div", class_="crossrefs")
 
     if (crossref_div is None):
-        print "That verse doesn't exist. Please try again."
+        print ("That verse doesn't exist. Please try again.")
         crossref_stepper(get_start_verse())
         return
 
@@ -101,17 +103,24 @@ def crossref_stepper(verse):
                 crossrefs_list.append(new_verse)
 
     #show all crossref options and let user pick the next one
-    print "Cross References from " + verse.get_name()
+    print ("Cross References from " + verse.get_name())
+    #Added so that the listed verses are written into a txt file.
+    f = open("save_verses.txt","a+")
+    f.write("Cross References from " + verse.get_name() + "\n")
     for idx, ref in enumerate(crossrefs_list):
-        print str(idx+1) + ". " + ref.get_name()
-        print ref.verseText
-        print ""
+        print (str(idx+1) + ". " + ref.get_name())
+        print (ref.verseText)
+        print ("")
+        f.write(str(idx+1) + ". " + ref.get_name()+"\n")
+        f.write(ref.verseText + "\n")
+    f.write("Reference Summary: " + input("Write a theme for the verses listed (Press Enter to Skip):\n") + "\n\n\n\n")
+    f.close()
     verse_index = next_ref_index(len(crossrefs_list))
 
     if (verse_index is None):
         return
 
     next_ref = crossrefs_list[verse_index]
-    print ""
+    print ("")
     crossrefs_list = []
     crossref_stepper(next_ref)

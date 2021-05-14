@@ -6,7 +6,7 @@
 # Matthew 28:17 -- "When they saw him, they worshiped him; but some doubted."
 
 from bs4 import BeautifulSoup
-from urllib2 import urlopen
+from urllib.request import urlopen
 import re
 import ssl
 from sys import version_info
