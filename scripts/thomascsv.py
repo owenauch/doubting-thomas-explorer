@@ -12,7 +12,7 @@ from sys import version_info
 
 # creates a csv file with name of your choice and a csv writer
 def create_csv(filename):
-    myfile = open(filename, 'wb')
+    myfile = open(filename, 'w')
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     return wr
 
@@ -23,12 +23,12 @@ def get_max_depth():
         depth = input("What is the max depth you'd like to go in searching for references?\nLarger numbers take longer -- 10 is usually a good start\n")
     else:
         depth = raw_input("What is the max depth you'd like to go in searching for references?\nLarger numbers take longer -- 10 is usually a good start\n")
-    print ""
+    print ("")
 
     try:
         checked_depth = int(depth)
     except ValueError:
-        print "Please enter a positive number\n"
+        print ("Please enter a positive number\n")
         get_max_depth()
         return
 
@@ -39,6 +39,7 @@ def get_max_depth():
 # that's true if it's references out and false if it's references in
 def writeRefs(wr, verse_list, if_out):
     which_refs = ""
+
     if (if_out):
         wr.writerow(["References Out"])
         which_refs = "refsOut"
@@ -81,3 +82,5 @@ get_next_verses(start_verse, 1, get_max_depth())
 wr = create_csv("verses.csv")
 writeRefs(wr, verse_list, False)
 writeRefs(wr, verse_list, True)
+
+import main
